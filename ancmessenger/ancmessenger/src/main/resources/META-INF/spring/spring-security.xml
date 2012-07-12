@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.4.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<beans:bean id="redirectRoleStrategy" class="org.sis.ancmessaging.service.RoleBasedAuthenticationSuccessHandler">
+		<beans:property name="roleUrlMap">
+			<beans:map>
+				<beans:entry key="ROLE_ADMIN" value="/admin" />
+				<beans:entry key="ROLE_USER" value="/user" />
+			</beans:map>
+		</beans:property>
+	</beans:bean>
+
+	<http auto-config="true" use-expressions="true">
+		<intercept-url pattern="/login" access="permitAll"/>
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/user/**" access="hasRole('ROLE_USER')" />
+		<form-login login-page="/login" authentication-failure-url="/login?error=true"
+			authentication-success-handler-ref="redirectRoleStrategy" />
+		<!-- 
+		<logout logout-success-url="/logout" />
+		 -->
+	</http>
+	 
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider>
+			<password-encoder hash="md5" />
+			<jdbc-user-service data-source-ref="dataSource" 
+					users-by-username-query="select Username, Password, Enabled from Users where Username = ?"
+					authorities-by-username-query="select u.Username, ur.Authority from Users u, User_Roles ur
+							where u.User_Id = ur.User_Id and u.Username = ?"
+			/>
+		</authentication-provider>
+	</authentication-manager>
+	
+</beans:beans>

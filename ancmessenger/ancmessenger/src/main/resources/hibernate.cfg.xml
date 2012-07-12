@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ancmessaging</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="connection.password"/>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		
+		<mapping class="org.sis.ancmessaging.domain.HealthCenter" />
+		<mapping class="org.sis.ancmessaging.domain.HealthPost" />
+		<mapping class="org.sis.ancmessaging.domain.HealthExtensionWorker" />
+		<mapping class="org.sis.ancmessaging.domain.Mother" />
+		<mapping class="org.sis.ancmessaging.domain.Reminder" />
+		<mapping class="org.sis.ancmessaging.domain.Gott" />
+		<mapping class="org.sis.ancmessaging.domain.Transporter" />
+		<mapping class="org.sis.ancmessaging.domain.Emergency" />
+        <mapping class="org.sis.ancmessaging.domain.Report" />
+        <mapping class="org.sis.ancmessaging.domain.ReportDetail" />
+	</session-factory>
+</hibernate-configuration>

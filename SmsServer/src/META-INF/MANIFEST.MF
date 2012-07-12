@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Class-Path: spring-orm-3.0.5.RELEASE.jar spring-tx-3.0.5.RELEASE.jar s
+ pring-expression-3.0.5.RELEASE.jar spring-jdbc-3.0.5.RELEASE.jar spri
+ ng-core-3.0.5.RELEASE.jar spring-context-3.0.5.RELEASE.jar spring-bea
+ ns-3.0.5.RELEASE.jar spring-asm-3.0.5.RELEASE.jar spring-aop-3.0.5.RE
+ LEASE.jar smslib-3.5.2.jar slf4j-api-1.6.1.jar quartz-2.1.0.jar pduut
+ ils-1.0.0.jar mysql-connector-java-5.1.6.jar log4j-1.2.16.jar jta-1.1
+ .jar joda-time-2.0.jar javassist-3.12.0.GA.jar hibernate-jpa-2.0-api-
+ 1.0.0.Final.jar hibernate-entitymanager-3.6.6.Final.jar cglib-2.2.jar
+  commons-collections-3.1.jar commons-dbcp-1.4.jar commons-logging-1.1
+ .1.jar commons-pool-1.5.4.jar dom4j-1.6.1.jar hibernate-commons-annot
+ ations-3.2.0.Final.jar hibernate-core-3.6.6.Final.jar antlr-2.7.6.jar
+  aopalliance-1.0.jar asm-3.1.jar c3p0-0.9.1.1.jar
+Main-Class: org.sis.ancmessaging.server.ui.MainForm
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:property-placeholder location="classpath:database.properties, classpath:config.properties" />
+	
+	<context:annotation-config />
+	<context:component-scan base-package="org.sis.ancmessaging.server" />
+	
+	
+	<!-- <bean id="reminderDao" class="org.sis.ancmessaging.server.dao.ReminderDaoImpl" /> -->
+	<bean id="reminderService" class="org.sis.ancmessaging.server.service.ReminderServiceImpl" />
+	<bean id="incomingService" class="org.sis.ancmessaging.server.service.IncomingServiceImpl" />
+    <bean id="appSettingService" class="org.sis.ancmessaging.server.service.AppSettingServiceImpl" />
+    <bean id="reportService" class="org.sis.ancmessaging.server.service.ReportServiceImpl" />
+
+	<bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
+        <property name="driverClassName" value="${database.driverClassName}"/>
+        <property name="url" value="${database.url}"/>
+        <property name="username" value="${database.username}"/>
+        <property name="password" value="${database.password}"/>
+    </bean>
+    
+    <bean class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" id="sessionFactory">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation">
+        	<value>classpath:hibernate.cfg.xml</value>
+        </property>
+        <property name="configurationClass">
+        	<value>org.hibernate.cfg.AnnotationConfiguration</value>
+        </property>
+        <property name="hibernateProperties">
+        	<props>
+        		<prop key="hibernate.dialect">${database.dialect}</prop>
+        		<prop key="hibernate.show_sql">true</prop>
+        	</props>
+        </property>
+    </bean>
+
+    <tx:annotation-driven />
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    	<property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    
+    <bean id="smsConfiguration" class="org.sis.ancmessaging.server.configuration.SmsConfiguration">
+    	<property name="comPort" value="${modem.comPort}" />
+    	<property name="modemName" value="${modem.modemName}" />
+    	<property name="baud" value="${modem.baud}" />
+    	<property name="manufacturer" value="${modem.manufacturer}" />
+    	<property name="model" value="${modem.model}" />
+    	<property name="simPin" value="${modem.simPin}" />
+    	<property name="outgoingInterval" value="${job.outgoingInterval}" />
+    	<property name="outgoingUnit" value="${job.outgoingUnit}" />
+    	<property name="incomingInterval" value="${job.incomingInterval}" />
+    	<property name="incomingUnit" value="${job.incomingUnit}" />
+    </bean>
+</beans>
