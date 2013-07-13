@@ -21,7 +21,8 @@ public class Mother implements Serializable {
 	private Integer gestationalAge;
 	private Date edd;
 	private String gott;
-    private Date arrivalTime;
+  //private String gare;
+  private Date arrivalTime;
 
     @Column(name = "Outcome",
             columnDefinition = "enum('Delivered at Home', 'Delivered at HC', 'Delivered at HP', 'Referred', 'Unknown')")
@@ -78,8 +79,16 @@ public class Mother implements Serializable {
 	public void setGott(String gott) {
 		this.gott = gott;
 	}
+    /*
+  public String getGare() {
+    return gare;
+  }
 
-	public int getSeqId() {
+  public void setGare(String gare) {
+    this.gare = gare;
+  }
+      */
+  public int getSeqId() {
 		return seqId;
 	}
 

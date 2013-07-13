@@ -1,15 +1,9 @@
 package org.sis.ancmessaging.service;
 
 import java.util.List;
-import org.sis.ancmessaging.dao.BaseDao;
-import org.sis.ancmessaging.dao.GottDao;
-import org.sis.ancmessaging.dao.HealthPostDao;
-import org.sis.ancmessaging.dao.HealthWorkerDao;
-import org.sis.ancmessaging.dao.TransporterDao;
-import org.sis.ancmessaging.domain.Gott;
-import org.sis.ancmessaging.domain.HealthExtensionWorker;
-import org.sis.ancmessaging.domain.HealthPost;
-import org.sis.ancmessaging.domain.Transporter;
+
+import org.sis.ancmessaging.dao.*;
+import org.sis.ancmessaging.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +21,9 @@ public class HealthPostServiceImpl extends BaseDao implements HealthPostService 
 	
 	@Autowired
 	private GottDao gottDao;
+
+  @Autowired
+  private GareDao gareDao;
 	
 	@Override
 	public boolean persist(HealthPost healthPost) {
@@ -80,7 +77,19 @@ public class HealthPostServiceImpl extends BaseDao implements HealthPostService 
 		return gottDao.getById(id);
 	}
 
-	@Override
+  @Override
+  public void addGareToGott(Gare gare, Gott gott) {
+    gott.getGares().add(gare);
+    gare.setGott(gott);
+    gareDao.save(gare);
+  }
+
+  @Override
+  public Gare findGareById(int gareId) {
+    return gareDao.getById(gareId);
+  }
+
+  @Override
 	public boolean persistGott(Gott gott) {
 		try {
 			gottDao.update(gott);
@@ -90,7 +99,17 @@ public class HealthPostServiceImpl extends BaseDao implements HealthPostService 
 		}
 	}
 
-	@Override
+  @Override
+  public boolean persistGare(Gare gare) {
+    try {
+      gareDao.update(gare);
+      return true;
+    } catch (Exception ex) {
+      return false;
+    }
+  }
+
+  @Override
 	public boolean persistHealthWorker(HealthExtensionWorker hw) {
 		try {
 			healthWorkerDao.update(hw);
@@ -140,4 +159,14 @@ public class HealthPostServiceImpl extends BaseDao implements HealthPostService 
 	public List<Gott> getAllGottsForHealthPost(int postId) {
 		return gottDao.getAllGottsForHealthPost(postId);
 	}
+
+  @Override
+  public List<Gare> getGaresForGott(int gottId, int rows, int page, StringBuilder sb) {
+    return gareDao.getPaginatedList(gottId, rows, page, sb);
+  }
+
+  @Override
+  public List<Gare> getAllGaresForGott(int gottId) {
+    return gareDao.getAllGaresForGott(gottId);
+  }
 }

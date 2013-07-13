@@ -17,6 +17,7 @@ public class HealthCenter implements Serializable {
 	@Id
 	@GeneratedValue
 	private int centerId;
+
 	private String centerName;
 	private String centerPhone;
 	

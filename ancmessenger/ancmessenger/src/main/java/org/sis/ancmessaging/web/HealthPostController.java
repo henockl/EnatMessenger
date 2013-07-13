@@ -1,15 +1,14 @@
 package org.sis.ancmessaging.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sis.ancmessaging.domain.Gott;
 import org.sis.ancmessaging.domain.HealthCenter;
 import org.sis.ancmessaging.domain.HealthPost;
-import org.sis.ancmessaging.dto.GottDTO;
-import org.sis.ancmessaging.dto.HealthPostDTO;
-import org.sis.ancmessaging.dto.HealthWorkerDTO;
-import org.sis.ancmessaging.dto.TransporterDTO;
+import org.sis.ancmessaging.dto.*;
 import org.sis.ancmessaging.json.CustomGenericResponse;
 import org.sis.ancmessaging.json.CustomHealthPostResponse;
 import org.sis.ancmessaging.service.HealthCenterService;
@@ -48,10 +47,17 @@ public class HealthPostController { // NO_UCD
 		model.addAttribute("healthPost", healthPost);
 		List<Gott> gotts = healthPost.getGotts();
 		model.addAttribute("gotts", gotts);
+
+    Map<Integer, String> gottList = new HashMap<Integer, String>();
+    for (Gott gott : gotts) {
+      gottList.put(gott.getGottId(), gott.getGottName());
+    }
 		
 		GottDTO gottDTO = new GottDTO();
 		gottDTO.setPostId(postId);
-		
+
+    GareDTO gareDTO = new GareDTO();
+
 		HealthWorkerDTO healthWorkerDTO = new HealthWorkerDTO();
 		healthWorkerDTO.setPostId(postId);
 		
@@ -59,9 +65,11 @@ public class HealthPostController { // NO_UCD
 		transporterDTO.setPostId(postId);
 		
 		model.addAttribute("gottDTO", gottDTO);
+    model.addAttribute("gareDTO", gareDTO);
 		model.addAttribute("healthWorkerDTO", healthWorkerDTO);
 		model.addAttribute("transporterDTO", transporterDTO);
 		model.addAttribute("gotts", gotts);
+    model.addAttribute("gottList", gottList);
 		
 		return "healthpostentries";
 	}

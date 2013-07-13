@@ -1,12 +1,10 @@
 package org.sis.ancmessaging.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Gott implements Serializable {
@@ -21,6 +19,9 @@ public class Gott implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "PostId")
 	private HealthPost healthPost;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "gott")
+  private List<Gare> gares = new ArrayList<Gare>();
 	
 	public Gott() {
 		
@@ -50,8 +51,11 @@ public class Gott implements Serializable {
 		this.healthPost = healthPost;
 	}
 
-	
-	
-	
-	
+  public List<Gare> getGares() {
+    return gares;
+  }
+
+  public void setGares(List<Gare> gares) {
+    this.gares = gares;
+  }
 }

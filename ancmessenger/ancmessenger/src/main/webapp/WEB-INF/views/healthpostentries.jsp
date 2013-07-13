@@ -52,7 +52,20 @@
 					}
 				}
 			});
-			
+
+            $('#gareForm').validate({
+                rules: {
+                    gareName: {
+                        required: true
+                    }
+                },
+                messages: {
+                    gareName: {
+                        required: "Please enter a name."
+                    }
+                }
+            });
+
 			$('#hewForm').validate({
 				rules: {
 					fullName: {
@@ -123,7 +136,26 @@
 					}
 				}
 			);
-			
+
+            $('#gareForm').ajaxForm(
+                    {
+                        beforeSubmit: function() {
+                            return $('#gareForm').validate().form();
+                        },
+                        success: function(data) {
+                            $('#garegridtable').jqGrid().trigger('reloadGrid');
+                            $('#gareForm').clearForm();
+                            var gare = $('#gare');
+                            $('#gare option').each(function(index, option) {
+                                $(option).remove();
+                            });
+                            $.each(data, function() {
+                                gare.append($('<option/>').val(this.gareId).text(this.gareName));
+                            });
+                            $('#gareInputForm').dialog('close');
+                        }
+                    }
+            );
 			$('#hewForm').ajaxForm(
 					{
 						beforeSubmit: function() {
@@ -211,7 +243,70 @@
 					title: 'Edit Row',
 					cursor: 'pointer'
 				}		
-			);	
+			);
+
+
+
+
+            var gottId = $('#gareGottId').val();
+            $('#garegridtable').jqGrid({
+                url: '/ancmessenger/admin/gare/getgares?gottId=' + gottId,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['Gare Id', 'Gare Name'],
+                colModel: [
+                    {name: 'gareId', index: 'gareId', editable: true, hidden: true},
+                    {name: 'gareName', index: 'gareName', width: 400, editable: true, required: true}
+                ],
+                height: "auto",
+                rowNum: 5,
+                rowList: [5, 10, 15],
+                rownumbers: true,
+                pager: '#garegridpager',
+                caption: 'Existing Gares',
+                emptyrecords: 'No data available',
+                ondblClickRow: editGottRow,
+                loadonce: false,
+                jsonReader: {
+                    root: 'rows',
+                    page: 'page',
+                    total: 'total',
+                    records: 'records',
+                    repeatitems: false,
+                    cell: 'cell',
+                    id: 'id'
+                }
+            });
+
+            $('#garegridtable').jqGrid('navGrid', '#garegridpager',
+                    {edit: false, add: false, del: false, search: false}
+            );
+
+            $('#garegridtable').jqGrid('navButtonAdd', '#garegridpager',
+                    {
+                        caption: 'Add',
+                        buttonicon: 'ui-icon-pencil',
+                        onClickButton: function() {
+                            addGareRow();
+                        },
+                        position: 'last',
+                        title: 'Add Gare',
+                        cursor: 'pointer'
+                    }
+            );
+
+            $('#garegridtable').jqGrid('navButtonAdd', '#garegridpager',
+                    {
+                        caption: 'Edit',
+                        buttonicon: 'ui-icon-pencil',
+                        onClickButton: function() {
+                            editGareRow();
+                        },
+                        position: 'last',
+                        title: 'Edit Row',
+                        cursor: 'pointer'
+                    }
+            );
 			
 			
 			var hewPostId = $('#hewPostId').val();
@@ -359,6 +454,25 @@
 				}
 			});
 
+            $('#gareInputForm').dialog({
+                autoOpen: false,
+                height: 200,
+                width: 350,
+                modal: true,
+                resizable: false,
+                fontSize: 10,
+                buttons: {
+                    "Save": function() {
+                        $('#gareForm').submit();
+
+                    },
+                    Cancel: function() {
+                        $('#gareForm').clearForm();
+                        $('#gareInputForm').dialog('close');
+                    }
+                }
+            });
+
             $('#hewInputArea').dialog({
                 autoOpen: false,
                 height: 300,
@@ -404,6 +518,10 @@
 
         function addHewRow() {
             $('#hewInputArea').dialog('open');
+        }
+
+        function addGareRow() {
+            $('#gareInputForm').dialog('open');
         }
 
         function addTransporterRow() {
@@ -557,7 +675,7 @@
 						<f:hidden path="postId" id="gottPostId" name="gottPostId" />
 						<f:hidden path="gottId" />
 						
-						<label for="gottName">Gott Name: </label>
+						<f:label path="gottName">Gott Name: </f:label>
 						<div>
 						<f:input path="gottName" style="width: 250px" />
 						</div>
@@ -570,7 +688,26 @@
 			</table>
 			<div id="gottgridpager"></div>
 		</div>
-		
+
+        <h3><a href="#">Gare</a></h3>
+        <div>
+            <div id="gareInputForm">
+                <div id="gareInputArea" style="width: 300px">
+                    <f:form id="gareForm" modelAttribute="gareDTO" method="POST" action="/ancmessenger/admin/gare/createajax">
+                        <f:label path="gareGottId">Gare: </f:label>
+                        <f:select path="gareGottId" items="${gottList}" />
+                        <br/>
+                        <f:label path="gareName">Gare Name: </f:label>
+                        <f:input path="gareName" style="width: 250px" />
+                    </f:form>
+                </div>
+            </div>
+
+            <table id="garegridtable">
+
+            </table>
+            <div id="garegridpager"></div>
+        </div>
 		<h3><a href="#">Health Extension Workers</a></h3>
 		<div>
 			<div id="hewInputArea" style="width: 300px; text-align: left">
